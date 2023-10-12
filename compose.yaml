@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  postgres:
+    image: 'postgres:latest'
+    container_name: library
+    env_file:
+      - ./docker-configs/postgres/.env
+    volumes:
+      - ~/app/postgres-store:/var/lib/postgres
+    ports:
+      - "5432:5432"
+
+  spring:
+    build: .
+    image: 'spring'
+    container_name: spring
+    env_file:
+      - ./docker-configs/spring/.env
+    ports:
+      - "8888:8888"
+    depends_on:
+      - postgres
