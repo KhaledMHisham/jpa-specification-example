@@ -1,13 +1,16 @@
 package com.example.springpractice.persistence.entities;
 
 import com.example.springpractice.persistence.entities.enums.Genre;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
 import java.util.*;
 
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "books")
@@ -24,10 +27,8 @@ public class Book {
     @Column(nullable = false)
     private String title;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "book_author",
-                joinColumns = @JoinColumn(name = "book_id"),
-                inverseJoinColumns = @JoinColumn(name = "author_id"))
+    @JsonIgnore
+    @ManyToMany(mappedBy = "books", fetch = FetchType.LAZY)
     private Set<Author> authors = new HashSet<>();
 
     @Column(name = "publication_year")
@@ -41,4 +42,16 @@ public class Book {
 
     private Long price;
 
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", isbn='" + isbn + '\'' +
+                ", title='" + title + '\'' +
+                ", publicationYear=" + publicationYear +
+                ", genre=" + genre +
+                ", publisher='" + publisher + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }

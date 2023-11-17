@@ -13,7 +13,7 @@ spring:
       auto-commit: true
     url: jdbc:postgresql://localhost:5432/library
   jpa:
-    show-sql: false
+    show-sql: true
     hibernate:
       ddl-auto: create-drop
     properties:

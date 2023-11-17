@@ -1,6 +1,6 @@
 package com.example.springpractice.config;
 
-import com.example.springpractice.persistence.entities.Author;
+import com.example.springpractice.persistence.entities.*;
 import com.example.springpractice.persistence.entities.Book;
 import com.example.springpractice.services.AuthorService;
 import com.example.springpractice.services.BookService;
@@ -28,8 +28,8 @@ public class DBInitializer implements CommandLineRunner {
     @Transactional
     public void run(String... args) throws Exception {
 
-        List<Book> books = bookService.generateRandomBooks(100000);
-        List<Author> authors = authorService.generateRandomAuthors(10000);
+        List<Book> books = bookService.generateRandomBooks(100);
+        List<Author> authors = authorService.generateRandomAuthors(100);
         bookService.saveAll(books);
         authorService.saveAll(authors);
         associateRandomBooksToAuthors(books, authors);
@@ -37,13 +37,17 @@ public class DBInitializer implements CommandLineRunner {
 
     @Transactional
     public void associateRandomBooksToAuthors(List<Book> books, List<Author> authors) {
-        Set<Book> randomBooks = new HashSet<>();
-        for(int i = 0; i < 3; ++i){
-            randomBooks.add(books.get(getRandomNumberInRange(1, books.size())));
-        }
         for (Author author : authors) {
-            author.addBooks(randomBooks);
+            author.addBooks(getRandomBooks(books));
         }
         authorService.saveAll(authors);
     }
- }
+
+    private static Set<Book> getRandomBooks(List<Book> books) {
+        Set<Book> randomBooks = new HashSet<>();
+        for(int i = 0; i < 3; ++i){
+            randomBooks.add(books.get(getRandomNumberInRange(1, books.size() - 1)));
+        }
+        return randomBooks;
+    }
+}

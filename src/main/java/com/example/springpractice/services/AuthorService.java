@@ -1,14 +1,18 @@
 package com.example.springpractice.services;
 
 import com.example.springpractice.logging.performance.annotations.LogTimeElapsed;
-import com.example.springpractice.persistence.entities.Author;
+import com.example.springpractice.persistence.entities.*;
 import com.example.springpractice.persistence.repositories.AuthorRepository;
+import com.example.springpractice.persistence.repositories.specifications.AuthorSpecification;
+import com.example.springpractice.persistence.repositories.specifications.SpecificationsUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.springpractice.persistence.repositories.specifications.SpecificationsUtils.has;
+import static com.example.springpractice.persistence.repositories.specifications.SpecificationsUtils.join;
 import static com.example.springpractice.utils.RandomNumberGenerator.getRandomNumberInRange;
 
 @Service
@@ -25,6 +29,12 @@ public class AuthorService {
         authorRepository.saveAll(authors);
     }
 
+    public List<Author> findAllByName(String authorName, String bookTitle, String isbn){
+        return authorRepository.findAll(
+            new AuthorSpecification<Author>()
+                .getSpec(authorName, bookTitle, isbn)
+        );
+    }
 
     @LogTimeElapsed(message = "GENERATING AUTHORS")
     public List<Author> generateRandomAuthors(long numberOfAuthors){
